@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ===== HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2><i class="fa-solid fa-chart-line"></i> Learning Progress</h2>
+        <h5 class="text-muted">Track your learning performance</h5>
+    </div>
+
+    <!-- BACK BUTTON -->
+    <a href="/child/dashboard" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<!-- ===== SUMMARY CARDS ===== -->
+<div class="row mb-4">
+
+    <!-- Activities Completed -->
+    <div class="col-md-4">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-list-check fa-2x mb-2"></i>
+            <h5>Activities Completed</h5>
+            <h3>{{ child.get_total_activities() }}</h3>
+        </div>
+    </div>
+
+    <!-- Average Score -->
+    <div class="col-md-4">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-star fa-2x mb-2"></i>
+            <h5>Average Score</h5>
+            <h3>{{ child.get_average_score() }}</h3>
+        </div>
+    </div>
+
+    <!-- Learning Badge -->
+    <div class="col-md-4">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-award fa-2x mb-2"></i>
+            <h5>Your Badge</h5>
+
+            {% if child.get_learning_badge() == "Bronze" %}
+                <span class="badge bg-secondary fs-5">🥉 Bronze</span>
+            {% elif child.get_learning_badge() == "Silver" %}
+                <span class="badge bg-info fs-5">🥈 Silver</span>
+            {% else %}
+                <span class="badge bg-warning text-dark fs-5">🥇 Gold</span>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== DETAILS SECTION ===== -->
+<div class="card p-3">
+    <h5><i class="fa-solid fa-book"></i> Learning Summary</h5>
+
+    <p><b>Total Activities:</b> {{ child.get_total_activities() }}</p>
+    <p><b>Average Score:</b> {{ child.get_average_score() }}</p>
+    <p><b>Current Badge:</b> {{ child.get_learning_badge() }}</p>
+
+    {% if child.get_total_activities() == 0 %}
+        <div class="alert alert-warning mt-2">
+            You have not completed any activities yet. Start learning now!
+        </div>
+    {% endif %}
+</div>
+
+<!-- ===== ACTION BUTTON ===== -->
+<div class="mt-4 text-center">
+    <a href="/lesson" class="btn btn-warning px-4 py-2">
+        <i class="fa-solid fa-book-open"></i> Continue Learning
+    </a>
+</div>
+
+{% endblock %}

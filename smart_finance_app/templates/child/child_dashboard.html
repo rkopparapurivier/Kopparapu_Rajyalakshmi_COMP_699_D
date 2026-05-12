@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ===== HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2><i class="fa-solid fa-child"></i> Child Dashboard</h2>
+        <h5 class="text-muted">Welcome, {{ current_user.name }}</h5>
+
+        <!-- CHILD CODE -->
+        <p class="mt-2">
+            <b>Your Code:</b> 
+            <span class="badge bg-dark">{{ child.unique_code }}</span>
+        </p>
+    </div>
+</div>
+
+<!-- ===== REMINDER ===== -->
+{% if child.reminder_text %}
+<div class="alert alert-warning">
+    <i class="fa-solid fa-bell"></i>
+    <b>Reminder:</b> {{ child.reminder_text }} (₹ {{ child.reminder_amount }})
+</div>
+{% endif %}
+
+<!-- ===== SUMMARY CARDS ===== -->
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-piggy-bank fa-2x mb-2"></i>
+            <h5>Total Savings</h5>
+            <h4>₹ {{ goals | sum(attribute='saved_amount') }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-bullseye fa-2x mb-2"></i>
+            <h5>Total Goals</h5>
+            <h4>{{ goals | length }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-award fa-2x mb-2"></i>
+            <h5>Learning Badge</h5>
+
+            {% if child.get_learning_badge() == "Bronze" %}
+                <span class="badge bg-secondary fs-5">🥉 Bronze</span>
+            {% elif child.get_learning_badge() == "Silver" %}
+                <span class="badge bg-info fs-5">🥈 Silver</span>
+            {% else %}
+                <span class="badge bg-warning text-dark fs-5">🥇 Gold</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card dashboard-card text-center">
+            <i class="fa-solid fa-book-open fa-2x mb-2"></i>
+            <h5>Learning Status</h5>
+            <h4>Active</h4>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== QUICK ACTIONS ===== -->
+<div class="text-center mb-4">
+
+    <a href="/child/progress" class="btn btn-info me-2">
+        <i class="fa-solid fa-chart-line"></i> View Progress
+    </a>
+
+    <a href="/lesson" class="btn btn-warning">
+        <i class="fa-solid fa-book-open"></i> Continue Learning
+    </a>
+
+</div>
+
+<!-- ===== CREATE GOAL ===== -->
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card p-3">
+            <h5 class="text-center">Create New Goal</h5>
+
+            <form method="POST" action="/goal/add">
+                <input name="name" class="form-control mb-2" placeholder="Goal Name" required>
+                <input name="amount" class="form-control mb-2" placeholder="Target Amount" required>
+
+                <button class="btn btn-primary w-100">
+                    <i class="fa-solid fa-plus"></i> Add Goal
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ===== RECENT GIFTS ===== -->
+<div class="mt-5">
+    <h5><i class="fa-solid fa-gift"></i> Recent Gifts</h5>
+
+    {% if gifts and gifts|length > 0 %}
+        {% for gift in gifts[:3] %}
+        <div class="card p-2 mb-2">
+
+            <div class="d-flex justify-content-between">
+                <span>🎁 ₹ {{ gift.amount }}</span>
+                <small class="text-muted">
+                    {{ gift.date_sent.strftime('%d-%m-%Y') if gift.date_sent }}
+                </small>
+            </div>
+
+            {% if gift.message %}
+                <small class="text-muted">Message: {{ gift.message }}</small>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="card p-3 text-center">
+            <p>No gifts received yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
