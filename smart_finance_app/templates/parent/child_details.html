@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ===== HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fa-solid fa-child"></i> Child Details</h2>
+        <h5 class="text-muted">Complete overview of child performance</h5>
+    </div>
+
+    <a href="/parent/dashboard" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<!-- ===== CHILD BASIC INFO ===== -->
+<div class="card p-3 mb-4">
+    <h5><i class="fa-solid fa-user"></i> Child Information</h5>
+
+    <p><b>Child ID:</b> {{ child.id }}</p>
+    <p><b>Age:</b> {{ child.age }}</p>
+    <p><b>Total Savings:</b> ₹ {{ child.calculate_total_savings() }}</p>
+
+    <!-- BADGE -->
+    <p>
+        <b>Learning Badge:</b>
+        {% if child.get_learning_badge() == "Bronze" %}
+            <span class="badge bg-secondary">🥉 Bronze</span>
+        {% elif child.get_learning_badge() == "Silver" %}
+            <span class="badge bg-info">🥈 Silver</span>
+        {% else %}
+            <span class="badge bg-warning text-dark">🥇 Gold</span>
+        {% endif %}
+    </p>
+</div>
+
+<!-- ===== WEEKLY PROGRESS REPORT ===== -->
+<div class="card p-3 mb-4">
+    <h5><i class="fa-solid fa-chart-line"></i> Weekly Progress Report</h5>
+
+    <p><b>Total Goals:</b> {{ child.get_total_goals() }}</p>
+    <p><b>Completed Goals:</b> {{ child.get_completed_goals() }}</p>
+    <p><b>Learning Score:</b> {{ child.learning_score }}</p>
+</div>
+
+<!-- ===== LESSON PROGRESS ===== -->
+<div class="card p-3 mb-4">
+    <h5><i class="fa-solid fa-book"></i> Lesson Progress</h5>
+
+    <p><b>Activities Completed:</b> {{ child.get_total_activities() }}</p>
+    <p><b>Average Score:</b> {{ child.get_average_score() }}</p>
+</div>
+
+<!-- ===== GOALS + SEND GIFT ===== -->
+<div class="card p-3 mb-4">
+    <h5><i class="fa-solid fa-bullseye"></i> Goals & Send Gift</h5>
+
+    {% if child.goals|length == 0 %}
+        <p>No goals created yet.</p>
+    {% else %}
+
+        {% for goal in child.goals %}
+        <div class="border p-3 mb-3 rounded">
+
+            <b>{{ goal.goal_name }}</b><br>
+            Saved: ₹ {{ goal.saved_amount }} / ₹ {{ goal.target_amount }}
+
+            <!-- Progress Bar -->
+            {% set progress = goal.get_progress() %}
+            <div class="progress mt-2">
+                <div class="progress-bar bg-success"
+                     style="width: {{ progress }}%;">
+                    {{ progress }}%
+                </div>
+            </div>
+
+            <!-- ✅ SEND GIFT FORM (FIXED) -->
+            <form method="POST" action="/send_gift/{{ goal.id }}" class="mt-3">
+                <input name="amount" placeholder="Gift amount" class="form-control mb-2" required>
+                <input name="message" placeholder="Message (optional)" class="form-control mb-2">
+
+                <button class="btn btn-success w-100">
+                    <i class="fa-solid fa-gift"></i> Send Gift
+                </button>
+            </form>
+
+        </div>
+        {% endfor %}
+
+    {% endif %}
+</div>
+
+<!-- ===== GIFTS RECEIVED ===== -->
+<div class="card p-3 mb-4">
+    <h5><i class="fa-solid fa-gift"></i> Gifts Received</h5>
+
+    {% if gifts and gifts|length > 0 %}
+        {% for gift in gifts %}
+        <div class="border p-2 mb-2 rounded">
+
+            <b>₹ {{ gift.amount }}</b><br>
+
+            {% if gift.message %}
+                <small class="text-muted">Message: {{ gift.message }}</small><br>
+            {% endif %}
+
+            <small class="text-muted">
+                {{ gift.date_sent.strftime('%d-%m-%Y') if gift.date_sent }}
+            </small>
+
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No gifts received yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2><i class="fa-solid fa-gift"></i> Send Gift to Child</h2>
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+        <div class="card p-4">
+
+            <h4 class="mb-3">Support Your Child's Goal</h4>
+
+            <!-- Send Gift Form -->
+            <form method="POST" action="/send_gift/{{ goal.id }}">
+
+                <div class="mb-3">
+                    <label>Goal Name</label>
+                    <input class="form-control" value="{{ goal.goal_name }}" disabled>
+                </div>
+
+                <div class="mb-3">
+                    <label>Enter Gift Amount</label>
+                    <input name="amount" class="form-control" placeholder="Enter amount">
+                </div>
+
+                <div class="mb-3">
+                    <label>Message (optional)</label>
+                    <textarea name="message" class="form-control" placeholder="Write a short message"></textarea>
+                </div>
+
+                <button class="btn btn-success w-100">
+                    <i class="fa-solid fa-paper-plane"></i> Send Gift
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
