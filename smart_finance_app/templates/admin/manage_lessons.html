@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2><i class="fa-solid fa-book"></i> Manage Lessons</h2>
+
+<div class="row">
+
+    <!-- ADD LESSON -->
+    <div class="col-md-4">
+        <div class="card p-3">
+
+            <h5>Add New Lesson</h5>
+
+            <form method="POST" action="/lesson/add">
+                <input name="title" class="form-control mb-2" placeholder="Lesson Title">
+                <textarea name="content" class="form-control mb-2" placeholder="Lesson Content"></textarea>
+
+                <button class="btn btn-success w-100">
+                    <i class="fa-solid fa-plus"></i> Add Lesson
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- EXISTING LESSONS -->
+    <div class="col-md-8">
+
+        <h5>All Lessons</h5>
+
+        {% for lesson in lessons %}
+        <div class="card p-3 mb-2">
+
+            <b>{{ lesson.title }}</b>
+
+            <form method="POST" action="/lesson/edit/{{ lesson.id }}">
+                <textarea name="content" class="form-control mt-2">{{ lesson.content }}</textarea>
+
+                <button class="btn btn-warning mt-2">
+                    <i class="fa-solid fa-pen"></i> Update Lesson
+                </button>
+            </form>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

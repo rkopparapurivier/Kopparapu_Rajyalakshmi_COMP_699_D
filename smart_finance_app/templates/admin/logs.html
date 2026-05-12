@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ===== HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fa-solid fa-list"></i> Recommendation Logs</h2>
+        <p class="text-muted">Track how the system selects lessons for children</p>
+    </div>
+
+    <a href="/admin/dashboard" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+</div>
+
+<!-- ===== LOGS LIST ===== -->
+{% if logs|length == 0 %}
+
+<div class="card p-4 text-center">
+    <i class="fa-solid fa-face-smile fa-2x mb-2"></i>
+    <p>No recommendation logs available yet.</p>
+</div>
+
+{% else %}
+
+{% for log in logs %}
+<div class="card p-3 mb-3">
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <b>Child ID</b>
+            <p>{{ log.child_id }}</p>
+        </div>
+
+        <div class="col-md-3">
+            <b>Profile Score</b>
+            <p>{{ log.score }}</p>
+        </div>
+
+        <div class="col-md-4">
+            <b>Recommended Lesson</b>
+            <p>{{ log.lesson_title }}</p>
+        </div>
+
+        <div class="col-md-2">
+            <b>Date</b>
+            <p>
+                {{ log.timestamp.strftime('%d-%m-%Y') if log.timestamp }}
+            </p>
+        </div>
+
+    </div>
+
+</div>
+{% endfor %}
+
+{% endif %}
+
+{% endblock %}

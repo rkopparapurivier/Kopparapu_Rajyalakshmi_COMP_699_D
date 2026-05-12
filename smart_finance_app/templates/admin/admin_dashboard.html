@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ===== HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fa-solid fa-user-shield"></i> Admin Dashboard</h2>
+        <p class="text-muted">System control panel and analytics</p>
+    </div>
+
+    <a href="/admin/logs" class="btn btn-dark">
+        <i class="fa-solid fa-list"></i> View Logs
+    </a>
+</div>
+
+<!-- ===== SYSTEM STATS ===== -->
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <h6>Total Users</h6>
+            <h4>{{ total_users }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <h6>Children</h6>
+            <h4>{{ total_children }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <h6>Parents</h6>
+            <h4>{{ total_parents }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <h6>Total Goals</h6>
+            <h4>{{ total_goals }}</h4>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <h6>Total Lessons</h6>
+            <h4>{{ total_lessons }}</h4>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== 🔥 RULE WEIGHTS (NEW FEATURE) ===== -->
+<div class="card p-4 mb-4">
+    <h5><i class="fa-solid fa-sliders"></i> Adjust Model Weights</h5>
+    <p class="text-muted">Control how the system calculates learning recommendations</p>
+
+    <form method="POST" action="/admin/update_weights">
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <label>Age Weight</label>
+                <input 
+                    type="number" step="0.1" 
+                    name="age" 
+                    value="{{ weights.age }}" 
+                    class="form-control mb-2" required>
+            </div>
+
+            <div class="col-md-4">
+                <label>Savings Weight</label>
+                <input 
+                    type="number" step="0.1" 
+                    name="savings" 
+                    value="{{ weights.savings }}" 
+                    class="form-control mb-2" required>
+            </div>
+
+            <div class="col-md-4">
+                <label>Behavior Weight</label>
+                <input 
+                    type="number" step="0.1" 
+                    name="behavior" 
+                    value="{{ weights.behavior }}" 
+                    class="form-control mb-2" required>
+            </div>
+
+        </div>
+
+        <button class="btn btn-primary w-100 mt-2">
+            <i class="fa-solid fa-save"></i> Update Weights
+        </button>
+
+    </form>
+</div>
+
+<!-- ===== ADD LESSON ===== -->
+<div class="card p-3 mb-4">
+    <h5><i class="fa-solid fa-plus"></i> Add Lesson</h5>
+
+    <form method="POST" action="/lesson/add">
+        <input name="title" class="form-control mb-2" placeholder="Lesson Title" required>
+        <textarea name="content" class="form-control mb-2" placeholder="Lesson content" required></textarea>
+
+        <button class="btn btn-success w-100">
+            <i class="fa-solid fa-check"></i> Add Lesson
+        </button>
+    </form>
+</div>
+
+<!-- ===== LESSON LIST ===== -->
+<h5><i class="fa-solid fa-book"></i> Manage Lessons</h5>
+
+{% if lessons|length == 0 %}
+    <div class="card p-3 text-center">
+        <p>No lessons added yet.</p>
+    </div>
+{% else %}
+
+{% for lesson in lessons %}
+<div class="card p-3 mt-3">
+
+    <b>{{ lesson.title }}</b>
+
+    <form method="POST" action="/lesson/edit/{{ lesson.id }}" class="mt-2">
+        <textarea name="content" class="form-control mb-2">{{ lesson.content }}</textarea>
+
+        <button class="btn btn-warning w-100">
+            <i class="fa-solid fa-pen"></i> Update Lesson
+        </button>
+    </form>
+
+</div>
+{% endfor %}
+
+{% endif %}
+
+{% endblock %}
